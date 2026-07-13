@@ -966,24 +966,52 @@ const visitState = {
   updateSent: false
 };
 
+function parseDevice(ua){
+  let browser = "Unknown browser";
+  if(/Edg\//.test(ua)) browser = "Edge";
+  else if(/Chrome\//.test(ua) && !/Chromium/.test(ua)) browser = "Chrome";
+  else if(/Firefox\//.test(ua)) browser = "Firefox";
+  else if(/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = "Safari";
+
+  let os = "Unknown OS";
+  if(/Windows/.test(ua)) os = "Windows";
+  else if(/Mac OS X/.test(ua)) os = "macOS";
+  else if(/Android/.test(ua)) os = "Android";
+  else if(/iPhone|iPad/.test(ua)) os = "iOS";
+  else if(/Linux/.test(ua)) os = "Linux";
+
+  const isMobile = /Mobi|Android|iPhone/.test(ua);
+  return `${browser} on ${os}${isMobile ? " 📱" : " 🖥️"}`;
+}
+
+function themeColorInt(){
+  const hex = getComputedStyle(document.documentElement).getPropertyValue('--violet').trim();
+  const clean = hex.replace('#', '');
+  const parsed = parseInt(clean, 16);
+  return Number.isNaN(parsed) ? 0x7C5CFC : parsed;
+}
+
 function buildVisitEmbed(){
   const minutesOn = ((Date.now() - visitState.startedAt) / 60000).toFixed(1);
-  const copiedList = visitState.copiedScripts.length
-    ? visitState.copiedScripts.map(t => `• ${t}`).join("\n")
-    : "None yet";
+  const copiedCount = visitState.copiedScripts.length;
+  const copiedList = copiedCount
+    ? visitState.copiedScripts.map((t, i) => `\`${i + 1}.\` ${t}`).join("\n")
+    : "_Nothing copied yet_";
 
   return {
-    title: "Visitor on studio.log",
-    color: 0x7C5CFC,
+    author: { name: "studio.log — Script Library" },
+    title: copiedCount ? `🟢 Active visitor — ${copiedCount} script${copiedCount > 1 ? 's' : ''} copied` : "🔵 New visitor",
+    color: themeColorInt(),
     fields: [
-      { name: "Page", value: location.pathname || "/", inline: true },
-      { name: "Referrer", value: document.referrer || "Direct / unknown", inline: true },
-      { name: "Language", value: navigator.language || "unknown", inline: true },
-      { name: "Screen", value: `${screen.width}×${screen.height}`, inline: true },
-      { name: "Time on site", value: `${minutesOn} min`, inline: true },
-      { name: "Scripts copied", value: copiedList },
-      { name: "User agent", value: navigator.userAgent.slice(0, 200) }
+      { name: "📄 Page", value: location.pathname || "/", inline: true },
+      { name: "🔗 Referrer", value: document.referrer || "Direct / unknown", inline: true },
+      { name: "⏱️ Time on site", value: `${minutesOn} min`, inline: true },
+      { name: "🌐 Language", value: navigator.language || "unknown", inline: true },
+      { name: "🖥️ Device", value: parseDevice(navigator.userAgent), inline: true },
+      { name: "📐 Screen", value: `${screen.width}×${screen.height}`, inline: true },
+      { name: "📋 Scripts copied", value: copiedList }
     ],
+    footer: { text: "studio.log • auto-updates until visitor leaves" },
     timestamp: new Date().toISOString()
   };
 }
