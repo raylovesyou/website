@@ -12,17 +12,53 @@
     --bg-soft: #10141D;
     --panel: #141926;
     --panel-border: #232B3D;
-    --grid-line: rgba(124,92,252,0.06);
     --text: #E7EAF3;
     --text-dim: #8992A9;
     --text-faint: #5B6478;
+
     --violet: #7C5CFC;
-    --violet-soft: rgba(124,92,252,0.14);
+    --violet-rgb: 124,92,252;
     --mint: #4ADE94;
+    --mint-rgb: 74,222,148;
     --amber: #FFB454;
+    --amber-rgb: 255,180,84;
     --rose: #FF6E8F;
+    --rose-rgb: 255,110,143;
     --sky: #56C7FF;
+    --sky-rgb: 86,199,255;
+
+    --grid-line: rgba(var(--violet-rgb),0.06);
+    --violet-soft: rgba(var(--violet-rgb),0.14);
     --radius: 10px;
+  }
+
+  /* ---------- THEMES ----------
+     Each theme swaps the background/panel/text tones and the primary
+     accent color. mint/amber/rose/sky stay fixed across themes since
+     they carry meaning elsewhere (GAG2/MM2/Adopt Me tag colors). */
+  html[data-theme="emerald"]{
+    --bg: #071410; --bg-soft: #0C1E17; --panel: #0F241C; --panel-border: #1E3D2E;
+    --text: #E6F5EC; --text-dim: #86AC98; --text-faint: #4C7059;
+    --violet: #34D399; --violet-rgb: 52,211,153;
+  }
+  html[data-theme="sunset"]{
+    --bg: #150C09; --bg-soft: #201310; --panel: #2A1712; --panel-border: #452921;
+    --text: #F7EBE1; --text-dim: #C29A80; --text-faint: #7A5A47;
+    --violet: #FF7A45; --violet-rgb: 255,122,69;
+  }
+  html[data-theme="ocean"]{
+    --bg: #050E17; --bg-soft: #0B1B2B; --panel: #0F2338; --panel-border: #1D3A57;
+    --text: #E4F1FB; --text-dim: #85AACB; --text-faint: #4A6B8A;
+    --violet: #2FA8FF; --violet-rgb: 47,168,255;
+  }
+  html[data-theme="berry"]{
+    --bg: #140810; --bg-soft: #201019; --panel: #2A1421; --panel-border: #452334;
+    --text: #F7E7EF; --text-dim: #C288A3; --text-faint: #7A4A5D;
+    --violet: #FF4D8D; --violet-rgb: 255,77,141;
+  }
+  html{ transition: none; }
+  html.theme-transition, html.theme-transition *{
+    transition: background-color .4s ease, border-color .4s ease, color .4s ease !important;
   }
 
   *{ box-sizing: border-box; margin:0; padding:0; }
@@ -30,9 +66,9 @@
 
   body{
     background:
-      radial-gradient(ellipse 900px 600px at 15% -10%, rgba(124,92,252,0.10), transparent 60%),
-      radial-gradient(ellipse 700px 500px at 85% 15%, rgba(74,222,148,0.06), transparent 55%),
-      radial-gradient(ellipse 800px 500px at 50% 100%, rgba(255,180,84,0.05), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 15% -10%, rgba(var(--violet-rgb),0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 85% 15%, rgba(var(--mint-rgb),0.06), transparent 55%),
+      radial-gradient(ellipse 800px 500px at 50% 100%, rgba(var(--amber-rgb),0.05), transparent 60%),
       var(--bg);
     color: var(--text);
     font-family: 'Inter', sans-serif;
@@ -104,7 +140,7 @@
     border-bottom: 1px solid var(--panel-border);
   }
   .brand{ display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.02em; }
-  .brand .cube{ width: 22px; height: 22px; position: relative; }
+  .brand .cube{ width: 22px; height: 22px; position: relative; color: var(--violet); }
   .brand .cube svg{ width:100%; height:100%; display:block; }
   .brand .dot{
     background: linear-gradient(135deg, var(--violet), var(--sky));
@@ -115,7 +151,7 @@
   nav.links a:hover{ color: var(--text); }
   .nav-cta{ display: flex; align-items: center; gap: 18px; }
   .btn-ghost{ font-size: 13px; color: var(--text-dim); border: 1px solid var(--panel-border); padding: 9px 16px; border-radius: 8px; transition: all .2s ease; }
-  .btn-ghost:hover{ border-color: var(--violet); color: var(--text); background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(74,222,148,0.06)); }
+  .btn-ghost:hover{ border-color: var(--violet); color: var(--text); background: linear-gradient(135deg, rgba(var(--violet-rgb),0.12), rgba(var(--mint-rgb),0.06)); }
 
   .btn-social{
     display: inline-flex; align-items: center; gap: 8px;
@@ -136,6 +172,33 @@
   }
   .footer-yt:hover{ color: #FF4D4D; }
 
+  /* ---------- THEME SWITCHER ---------- */
+  .theme-switch{ position: relative; }
+  .theme-btn{
+    width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--panel-border);
+    background: var(--panel); color: var(--text-dim); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .2s ease;
+  }
+  .theme-btn:hover{ color: var(--violet); border-color: var(--violet); transform: rotate(20deg); }
+  .theme-panel{
+    position: absolute; top: calc(100% + 10px); right: 0; z-index: 150;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 12px;
+    padding: 10px; width: 168px;
+    box-shadow: 0 20px 50px -15px rgba(0,0,0,0.6);
+    opacity: 0; pointer-events: none; transform: translateY(-8px) scale(0.96);
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .theme-panel.open{ opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+  .theme-panel-label{ font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); padding: 4px 8px 8px; }
+  .theme-option{
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: none; border: none; color: var(--text-dim); font-size: 13.5px; font-family: 'Inter', sans-serif;
+    padding: 9px 8px; border-radius: 8px; cursor: pointer; transition: background .2s ease, color .2s ease;
+  }
+  .theme-option:hover{ background: rgba(var(--violet-rgb),0.1); color: var(--text); }
+  .theme-option.active{ color: var(--text); background: rgba(var(--violet-rgb),0.14); font-weight: 500; }
+  .swatch-dot{ width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+
   /* ---------- HERO ---------- */
   .hero{
     position: relative; padding: 96px 48px 64px;
@@ -145,11 +208,11 @@
   .eyebrow{
     display: inline-flex; align-items: center; gap: 8px;
     font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mint);
-    background: rgba(74,222,148,0.08); border: 1px solid rgba(74,222,148,0.25);
+    background: rgba(var(--mint-rgb),0.08); border: 1px solid rgba(var(--mint-rgb),0.25);
     padding: 6px 12px; border-radius: 20px; margin-bottom: 24px;
   }
   .eyebrow .pulse{ width: 6px; height: 6px; border-radius: 50%; background: var(--mint); animation: pulse 2s infinite; }
-  @keyframes pulse{ 0%{ box-shadow: 0 0 0 0 rgba(74,222,148,0.5); } 70%{ box-shadow: 0 0 0 8px rgba(74,222,148,0); } 100%{ box-shadow: 0 0 0 0 rgba(74,222,148,0); } }
+  @keyframes pulse{ 0%{ box-shadow: 0 0 0 0 rgba(var(--mint-rgb),0.5); } 70%{ box-shadow: 0 0 0 8px rgba(var(--mint-rgb),0); } 100%{ box-shadow: 0 0 0 0 rgba(var(--mint-rgb),0); } }
 
   .hero h1{ font-family: 'Space Grotesk', sans-serif; font-size: clamp(38px, 4.6vw, 60px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 22px; }
   .hero h1 .accent{
@@ -167,7 +230,7 @@
     color: #fff; font-weight: 600; font-size: 14px; padding: 13px 22px; border-radius: 8px;
     display: inline-flex; align-items: center; gap: 8px; transition: transform .2s ease, box-shadow .2s ease, background-position .5s ease;
   }
-  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,92,252,0.4); background-position: 100% center; }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(var(--violet-rgb),0.4); background-position: 100% center; }
 
   /* quick game jump chips */
   .game-jump{ display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
@@ -179,9 +242,9 @@
   }
   .game-jump a .swatch{ width: 8px; height: 8px; border-radius: 50%; }
   .game-jump a:hover{ color: var(--text); transform: translateY(-2px); }
-  .game-jump a.gag:hover{ border-color: var(--mint); background: linear-gradient(135deg, rgba(74,222,148,0.14), rgba(74,222,148,0.03)); }
-  .game-jump a.mm2:hover{ border-color: var(--rose); background: linear-gradient(135deg, rgba(255,110,143,0.14), rgba(255,110,143,0.03)); }
-  .game-jump a.adoptme:hover{ border-color: var(--amber); background: linear-gradient(135deg, rgba(255,180,84,0.14), rgba(255,180,84,0.03)); }
+  .game-jump a.gag:hover{ border-color: var(--mint); background: linear-gradient(135deg, rgba(var(--mint-rgb),0.14), rgba(var(--mint-rgb),0.03)); }
+  .game-jump a.mm2:hover{ border-color: var(--rose); background: linear-gradient(135deg, rgba(var(--rose-rgb),0.14), rgba(var(--rose-rgb),0.03)); }
+  .game-jump a.adoptme:hover{ border-color: var(--amber); background: linear-gradient(135deg, rgba(var(--amber-rgb),0.14), rgba(var(--amber-rgb),0.03)); }
 
   .stat-row{ display: flex; gap: 32px; margin-top: 36px; padding-top: 26px; border-top: 1px solid var(--panel-border); max-width: 500px; flex-wrap: wrap; }
   .stat-row .stat b{
@@ -223,7 +286,7 @@
     max-width: 1320px; margin: 0 auto; padding: 0 48px 40px;
   }
   .trust-inner{
-    background: linear-gradient(120deg, rgba(124,92,252,0.08), rgba(74,222,148,0.04));
+    background: linear-gradient(120deg, rgba(var(--violet-rgb),0.08), rgba(var(--mint-rgb),0.04));
     border: 1px solid var(--panel-border);
     border-radius: 14px;
     padding: 20px 26px;
@@ -287,7 +350,7 @@
   .search-box svg{ flex-shrink: 0; color: var(--text-faint); }
   .filter-chip{ font-size: 13px; padding: 9px 15px; border-radius: 20px; border: 1px solid var(--panel-border); color: var(--text-dim); cursor: pointer; transition: all .2s ease; background: var(--panel); white-space: nowrap; }
   .filter-chip:hover{ border-color: var(--violet); color: var(--text); }
-  .filter-chip.active{ background: linear-gradient(120deg, rgba(124,92,252,0.28), rgba(124,92,252,0.1)); border-color: var(--violet); color: #C8BBFF; }
+  .filter-chip.active{ background: linear-gradient(120deg, rgba(var(--violet-rgb),0.28), rgba(var(--violet-rgb),0.1)); border-color: var(--violet); color: #C8BBFF; }
 
   .grid{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 22px; }
 
@@ -303,7 +366,7 @@
     opacity: 0.75;
   }
   .card.in-view{ opacity: 1; transform: translateY(0); }
-  .card:hover{ border-color: rgba(124,92,252,0.45); box-shadow: 0 20px 50px -25px rgba(124,92,252,0.35); transform: translateY(-4px); }
+  .card:hover{ border-color: rgba(var(--violet-rgb),0.45); box-shadow: 0 20px 50px -25px rgba(var(--violet-rgb),0.35); transform: translateY(-4px); }
 
   .card-head{ padding: 18px 18px 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
   .card-head h3{ font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 6px; }
@@ -311,14 +374,14 @@
 
   .tag-row{ display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
   .tag{ font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: 4px 9px; border-radius: 5px; white-space: nowrap; }
-  .tag.combat{ background: linear-gradient(120deg, rgba(255,110,143,0.20), rgba(255,110,143,0.06)); color: var(--rose); }
-  .tag.utility{ background: linear-gradient(120deg, rgba(124,92,252,0.24), rgba(124,92,252,0.06)); color: #C8BBFF; }
-  .tag.ui{ background: linear-gradient(120deg, rgba(255,180,84,0.22), rgba(255,180,84,0.06)); color: var(--amber); }
-  .tag.gameplay{ background: linear-gradient(120deg, rgba(74,222,148,0.20), rgba(74,222,148,0.06)); color: var(--mint); }
-  .tag.game-gag2{ background: linear-gradient(120deg, rgba(74,222,148,0.22), rgba(74,222,148,0.06)); color: var(--mint); }
-  .tag.game-mm2{ background: linear-gradient(120deg, rgba(255,110,143,0.22), rgba(255,110,143,0.06)); color: var(--rose); }
-  .tag.game-adoptme{ background: linear-gradient(120deg, rgba(255,180,84,0.22), rgba(255,180,84,0.06)); color: var(--amber); }
-  .tag.game-general{ background: linear-gradient(120deg, rgba(86,199,255,0.22), rgba(86,199,255,0.06)); color: var(--sky); }
+  .tag.combat{ background: linear-gradient(120deg, rgba(var(--rose-rgb),0.20), rgba(var(--rose-rgb),0.06)); color: var(--rose); }
+  .tag.utility{ background: linear-gradient(120deg, rgba(var(--violet-rgb),0.24), rgba(var(--violet-rgb),0.06)); color: #C8BBFF; }
+  .tag.ui{ background: linear-gradient(120deg, rgba(var(--amber-rgb),0.22), rgba(var(--amber-rgb),0.06)); color: var(--amber); }
+  .tag.gameplay{ background: linear-gradient(120deg, rgba(var(--mint-rgb),0.20), rgba(var(--mint-rgb),0.06)); color: var(--mint); }
+  .tag.game-gag2{ background: linear-gradient(120deg, rgba(var(--mint-rgb),0.22), rgba(var(--mint-rgb),0.06)); color: var(--mint); }
+  .tag.game-mm2{ background: linear-gradient(120deg, rgba(var(--rose-rgb),0.22), rgba(var(--rose-rgb),0.06)); color: var(--rose); }
+  .tag.game-adoptme{ background: linear-gradient(120deg, rgba(var(--amber-rgb),0.22), rgba(var(--amber-rgb),0.06)); color: var(--amber); }
+  .tag.game-general{ background: linear-gradient(120deg, rgba(var(--sky-rgb),0.22), rgba(var(--sky-rgb),0.06)); color: var(--sky); }
 
   .card-stats{
     display: flex; align-items: center; gap: 10px; padding: 0 18px 12px;
@@ -339,7 +402,7 @@
   .meta-mini{ font-size: 11.5px; color: var(--text-faint); font-family: 'JetBrains Mono', monospace; display: flex; gap: 12px; }
   .card-btns{ display: flex; gap: 8px; }
   .icon-btn{ width: 32px; height: 32px; border-radius: 7px; border: 1px solid var(--panel-border); display: flex; align-items: center; justify-content: center; color: var(--text-dim); cursor: pointer; transition: all .2s ease; background: transparent; }
-  .icon-btn:hover{ border-color: var(--violet); color: var(--text); background: linear-gradient(135deg, rgba(124,92,252,0.22), rgba(124,92,252,0.06)); }
+  .icon-btn:hover{ border-color: var(--violet); color: var(--text); background: linear-gradient(135deg, rgba(var(--violet-rgb),0.22), rgba(var(--violet-rgb),0.06)); }
   .icon-btn.copied{ color: var(--mint); border-color: var(--mint); }
 
   /* ---------- HOW-TO STEPS ---------- */
@@ -349,10 +412,10 @@
     padding: 22px; position: relative; overflow: hidden;
     transition: transform .3s ease, border-color .3s ease;
   }
-  .step-card:hover{ transform: translateY(-3px); border-color: rgba(124,92,252,0.4); }
+  .step-card:hover{ transform: translateY(-3px); border-color: rgba(var(--violet-rgb),0.4); }
   .step-card::after{
     content: ''; position: absolute; bottom: -30px; right: -30px; width: 90px; height: 90px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(124,92,252,0.14), transparent 70%);
+    background: radial-gradient(circle, rgba(var(--violet-rgb),0.14), transparent 70%);
   }
   .step-num{
     width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
@@ -365,7 +428,7 @@
   /* ---------- FAQ ---------- */
   .faq-list{ display: flex; flex-direction: column; gap: 10px; max-width: 760px; }
   .faq-item{ background: var(--panel); border: 1px solid var(--panel-border); border-radius: 10px; overflow: hidden; transition: border-color .25s ease; }
-  .faq-item.open{ border-color: rgba(124,92,252,0.4); }
+  .faq-item.open{ border-color: rgba(var(--violet-rgb),0.4); }
   .faq-q{
     width: 100%; text-align: left; background: none; border: none; color: var(--text);
     font-family: 'Inter', sans-serif; font-size: 14.5px; font-weight: 500;
@@ -401,9 +464,9 @@
     border: 1px solid var(--panel-border); padding: 6px 12px; border-radius: 20px; white-space: nowrap;
   }
 
-  .game-section.gag2 .game-icon{ background: linear-gradient(135deg, rgba(74,222,148,0.18), rgba(74,222,148,0.03)); border-color: rgba(74,222,148,0.3); }
-  .game-section.mm2 .game-icon{ background: linear-gradient(135deg, rgba(255,110,143,0.18), rgba(255,110,143,0.03)); border-color: rgba(255,110,143,0.3); }
-  .game-section.adoptme .game-icon{ background: linear-gradient(135deg, rgba(255,180,84,0.18), rgba(255,180,84,0.03)); border-color: rgba(255,180,84,0.3); }
+  .game-section.gag2 .game-icon{ background: linear-gradient(135deg, rgba(var(--mint-rgb),0.18), rgba(var(--mint-rgb),0.03)); border-color: rgba(var(--mint-rgb),0.3); }
+  .game-section.mm2 .game-icon{ background: linear-gradient(135deg, rgba(var(--rose-rgb),0.18), rgba(var(--rose-rgb),0.03)); border-color: rgba(var(--rose-rgb),0.3); }
+  .game-section.adoptme .game-icon{ background: linear-gradient(135deg, rgba(var(--amber-rgb),0.18), rgba(var(--amber-rgb),0.03)); border-color: rgba(var(--amber-rgb),0.3); }
 
   /* ---------- MODAL ---------- */
   .modal-overlay{ position: fixed; inset: 0; background: rgba(6,8,13,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity .25s ease; padding: 24px; }
@@ -427,10 +490,10 @@
     background: linear-gradient(135deg, var(--violet), var(--sky)); color: #fff; display: flex; align-items: center; justify-content: center;
     cursor: pointer; opacity: 0; pointer-events: none; transform: translateY(10px);
     transition: opacity .3s ease, transform .3s ease, box-shadow .2s ease; z-index: 200;
-    box-shadow: 0 10px 30px -8px rgba(124,92,252,0.6);
+    box-shadow: 0 10px 30px -8px rgba(var(--violet-rgb),0.6);
   }
   .to-top.show{ opacity: 1; pointer-events: all; transform: translateY(0); }
-  .to-top:hover{ box-shadow: 0 14px 36px -6px rgba(124,92,252,0.75); }
+  .to-top:hover{ box-shadow: 0 14px 36px -6px rgba(var(--violet-rgb),0.75); }
   .to-top svg{ animation: arrowNudge 1.8s ease-in-out infinite; }
   @keyframes arrowNudge{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-3px); } }
 
@@ -441,7 +504,7 @@
   @keyframes wiggleChip{ 0%,100%{ transform: scale(1); } 40%{ transform: scale(0.93); } 70%{ transform: scale(1.05); } }
   @keyframes drift{ 0%,100%{ transform: translate(0,0) rotate(0deg); } 33%{ transform: translate(18px,-14px) rotate(6deg); } 66%{ transform: translate(-14px,10px) rotate(-4deg); } }
   @keyframes ringExpand{ 0%{ transform: scale(0.8); opacity: 0.6; } 100%{ transform: scale(2.4); opacity: 0; } }
-  @keyframes glowPulse{ 0%,100%{ box-shadow: 0 0 0 0 rgba(124,92,252,0.35); } 50%{ box-shadow: 0 0 0 6px rgba(124,92,252,0); } }
+  @keyframes glowPulse{ 0%,100%{ box-shadow: 0 0 0 0 rgba(var(--violet-rgb),0.35); } 50%{ box-shadow: 0 0 0 6px rgba(var(--violet-rgb),0); } }
   @keyframes glowDrift{ 0%{ transform: translateX(-54%) translateY(0) scale(1); } 100%{ transform: translateX(-46%) translateY(20px) scale(1.08); } }
 
   /* hero entrance choreography */
@@ -458,7 +521,7 @@
   .hero-glow{
     position: absolute; top: -140px; left: 50%; width: 900px; height: 500px;
     transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(124,92,252,0.16) 0%, rgba(124,92,252,0) 65%);
+    background: radial-gradient(circle, rgba(var(--violet-rgb),0.16) 0%, rgba(var(--violet-rgb),0) 65%);
     z-index: -2; pointer-events: none;
     animation: glowDrift 10s ease-in-out infinite alternate;
   }
@@ -546,7 +609,7 @@
   footer{
     border-top: 1px solid var(--panel-border); padding: 36px 48px; display: flex; justify-content: space-between; align-items: center;
     color: var(--text-faint); font-size: 13px; position: relative; z-index: 1; flex-wrap: wrap; gap: 12px;
-    background: linear-gradient(180deg, transparent, rgba(124,92,252,0.04));
+    background: linear-gradient(180deg, transparent, rgba(var(--violet-rgb),0.04));
   }
 
   @media (max-width: 880px){
@@ -584,8 +647,8 @@
   <div class="brand">
     <span class="cube">
       <svg viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="#7C5CFC" stroke-width="1.6" stroke-linejoin="round"/>
-        <path d="M12 2V22M3 7L12 12M21 7L12 12" stroke="#7C5CFC" stroke-width="1.6" opacity="0.5"/>
+        <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M12 2V22M3 7L12 12M21 7L12 12" stroke="currentColor" stroke-width="1.6" opacity="0.5"/>
       </svg>
     </span>
     studio<span class="dot">.</span>log
@@ -599,6 +662,19 @@
     <a href="#faq">FAQ</a>
   </nav>
   <div class="nav-cta">
+    <div class="theme-switch" id="themeSwitch">
+      <button class="theme-btn" id="themeBtn" title="Change theme" aria-label="Change theme" aria-expanded="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><circle cx="8.2" cy="10" r="1.4" fill="currentColor"/><circle cx="12" cy="7.2" r="1.4" fill="currentColor"/><circle cx="16" cy="10.5" r="1.4" fill="currentColor"/><circle cx="10" cy="15" r="1.4" fill="currentColor"/></svg>
+      </button>
+      <div class="theme-panel" id="themePanel">
+        <div class="theme-panel-label">Theme</div>
+        <button class="theme-option active" data-theme="violet"><span class="swatch-dot" style="background:#7C5CFC"></span>Violet</button>
+        <button class="theme-option" data-theme="emerald"><span class="swatch-dot" style="background:#34D399"></span>Emerald</button>
+        <button class="theme-option" data-theme="sunset"><span class="swatch-dot" style="background:#FF7A45"></span>Sunset</button>
+        <button class="theme-option" data-theme="ocean"><span class="swatch-dot" style="background:#2FA8FF"></span>Ocean</button>
+        <button class="theme-option" data-theme="berry"><span class="swatch-dot" style="background:#FF4D8D"></span>Berry</button>
+      </div>
+    </div>
     <a href="https://youtube.com/@rayscripts01?si=o5zh6B4Ozw6Zgz9o" target="_blank" rel="noopener" class="btn-social yt">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.6"/><path d="M10 9L15 12L10 15V9Z" fill="currentColor"/></svg>
       YouTube
@@ -793,6 +869,11 @@
       <h3 style="font-family:'Space Grotesk',sans-serif; font-size:16px; margin-bottom:8px;">Save and reload</h3>
       <p style="color:var(--text-dim); font-size:13.5px; line-height:1.6;">Grids, counts, search, filters, and syntax highlighting all rebuild themselves from the array.</p>
     </div>
+    <div style="background:var(--panel); border:1px solid var(--panel-border); border-radius:var(--radius); padding:22px;">
+      <div style="color:var(--violet); font-family:'JetBrains Mono',monospace; font-size:12px; margin-bottom:10px;">04</div>
+      <h3 style="font-family:'Space Grotesk',sans-serif; font-size:16px; margin-bottom:8px;">Get notified of visits</h3>
+      <p style="color:var(--text-dim); font-size:13.5px; line-height:1.6;">Find <code style="color:var(--mint)">DISCORD_WEBHOOK_URL</code> near the top of the script and paste in a webhook link. The message updates itself as visitors browse — showing time on site and which scripts they copied — right up until they leave.</p>
+    </div>
   </div>
 </section>
 
@@ -849,7 +930,7 @@
     </div>
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-foot">
-      <div class="icon-btn" id="modalCopy" style="width:auto; padding:0 16px; gap:8px; font-size:13px; background:linear-gradient(135deg, rgba(124,92,252,0.28), rgba(74,222,148,0.12)); border-color:rgba(124,92,252,0.4);">
+      <div class="icon-btn" id="modalCopy" style="width:auto; padding:0 16px; gap:8px; font-size:13px; background:linear-gradient(135deg, rgba(var(--violet-rgb),0.28), rgba(var(--mint-rgb),0.12)); border-color:rgba(var(--violet-rgb),0.4);">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V5a1 1 0 0 1 1-1h10" stroke="currentColor" stroke-width="1.6"/></svg>
         Copy script
       </div>
@@ -858,6 +939,89 @@
 </div>
 
 <script>
+/* ============ DISCORD VISIT NOTIFICATIONS ============
+   Paste your own webhook URL below to get a Discord message every time
+   someone loads this page. Leave it blank to disable.
+
+   Get one: Discord → Server Settings → Integrations → Webhooks → New Webhook → Copy URL
+
+   Heads up — this is a static, client-only page, so there's no real
+   "server" to keep a secret on:
+   - Whatever URL you put here is visible to anyone who opens dev tools
+     or view-source. There's no way to fully hide it from the browser
+     that has to send the request.
+   - If you need it truly hidden, route this through a small serverless
+     proxy (e.g. a Cloudflare Worker) that holds the real webhook URL as
+     a server-side secret, and point DISCORD_WEBHOOK_URL at the proxy
+     instead. Ask for that snippet if you want it set up.
+   - If a webhook URL ever leaks and gets spammed, delete it in Discord
+     and paste a fresh one in here.
+*/
+const DISCORD_WEBHOOK_URL = ""; // e.g. "https://discord.com/api/webhooks/xxxxx/xxxxx"
+
+const visitState = {
+  messageId: null,
+  startedAt: Date.now(),
+  copiedScripts: [],
+  updateSent: false
+};
+
+function buildVisitEmbed(){
+  const minutesOn = ((Date.now() - visitState.startedAt) / 60000).toFixed(1);
+  const copiedList = visitState.copiedScripts.length
+    ? visitState.copiedScripts.map(t => `• ${t}`).join("\n")
+    : "None yet";
+
+  return {
+    title: "Visitor on studio.log",
+    color: 0x7C5CFC,
+    fields: [
+      { name: "Page", value: location.pathname || "/", inline: true },
+      { name: "Referrer", value: document.referrer || "Direct / unknown", inline: true },
+      { name: "Language", value: navigator.language || "unknown", inline: true },
+      { name: "Screen", value: `${screen.width}×${screen.height}`, inline: true },
+      { name: "Time on site", value: `${minutesOn} min`, inline: true },
+      { name: "Scripts copied", value: copiedList },
+      { name: "User agent", value: navigator.userAgent.slice(0, 200) }
+    ],
+    timestamp: new Date().toISOString()
+  };
+}
+
+function notifyDiscordVisit(){
+  if(!DISCORD_WEBHOOK_URL) return;
+
+  fetch(`${DISCORD_WEBHOOK_URL}?wait=true`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ embeds: [buildVisitEmbed()] })
+  })
+    .then(res => res.json())
+    .then(data => { if(data && data.id) visitState.messageId = data.id; })
+    .catch(() => { /* fail silently — never block the page on this */ });
+}
+
+function updateDiscordVisit(){
+  if(!DISCORD_WEBHOOK_URL || !visitState.messageId || visitState.updateSent) return;
+  visitState.updateSent = true;
+
+  fetch(`${DISCORD_WEBHOOK_URL}/messages/${visitState.messageId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+    body: JSON.stringify({ embeds: [buildVisitEmbed()] })
+  }).catch(() => {});
+}
+
+function logScriptCopy(title){
+  visitState.copiedScripts.push(title);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'hidden') updateDiscordVisit();
+});
+window.addEventListener('pagehide', updateDiscordVisit);
+
 /* ============ DATA ============
    Add your own scripts here. category ∈ gameplay | ui | utility | combat
    game ∈ general | gag2 | mm2 | adoptme
@@ -1534,7 +1698,7 @@ function buildCard(s, idx){
       </div>
     </div>
   `;
-  card.querySelector('[data-action="copy"]').addEventListener('click', (e) => copyScript(s.code, e.currentTarget));
+  card.querySelector('[data-action="copy"]').addEventListener('click', (e) => copyScript(s.code, e.currentTarget, s.title));
   card.querySelector('[data-action="view"]').addEventListener('click', () => openModal(s));
 
   card.addEventListener('mousemove', (e) => {
@@ -1572,15 +1736,55 @@ function renderGameSection(gameKey, gridId, countId){
   observeCards();
 }
 
-function copyScript(code, btn){
+function copyScript(code, btn, title){
   navigator.clipboard.writeText(code).then(() => {
     btn.classList.add('copied');
     const original = btn.innerHTML;
     btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
     setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = original; }, 1400);
     showToast('Copied to clipboard — paste it into Studio.');
+    if(title) logScriptCopy(title);
   });
 }
+
+/* ============ THEME SWITCHER ============ */
+const themeBtn = document.getElementById('themeBtn');
+const themePanel = document.getElementById('themePanel');
+const themeSwitch = document.getElementById('themeSwitch');
+
+themeBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isOpen = themePanel.classList.toggle('open');
+  themeBtn.setAttribute('aria-expanded', String(isOpen));
+});
+
+document.addEventListener('click', (e) => {
+  if(!themeSwitch.contains(e.target)){
+    themePanel.classList.remove('open');
+    themeBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+document.querySelectorAll('.theme-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const theme = opt.dataset.theme;
+
+    document.documentElement.classList.add('theme-transition');
+    if(theme === 'violet'){
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    setTimeout(() => document.documentElement.classList.remove('theme-transition'), 450);
+
+    document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+    opt.classList.add('active');
+
+    themePanel.classList.remove('open');
+    themeBtn.setAttribute('aria-expanded', 'false');
+    showToast(`Switched to ${opt.textContent.trim()} theme`);
+  });
+});
 
 /* ============ TOAST ============ */
 let toastTimer = null;
@@ -1604,16 +1808,18 @@ const modalTitle = document.getElementById('modalTitle');
 const modalBody = document.getElementById('modalBody');
 const modalCopy = document.getElementById('modalCopy');
 let currentCode = "";
+let currentTitle = "";
 
 function openModal(s){
   modalTitle.textContent = s.title.replace(/\s+/g,'') + ".lua";
   modalBody.innerHTML = highlight(s.code);
   currentCode = s.code;
+  currentTitle = s.title;
   overlay.classList.add('open');
 }
 document.getElementById('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
 overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
-modalCopy.addEventListener('click', () => copyScript(currentCode, modalCopy));
+modalCopy.addEventListener('click', () => copyScript(currentCode, modalCopy, currentTitle));
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') overlay.classList.remove('open'); });
 
 /* ============ FILTER + SEARCH (core library) ============ */
@@ -1833,6 +2039,7 @@ function observeSectionHeads(){
 
 /* ============ INIT ============ */
 window.addEventListener('DOMContentLoaded', () => {
+  notifyDiscordVisit();
   buildCubeField();
   buildParticles();
   typewriterCycle();
