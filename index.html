@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -54,6 +55,14 @@ button{font-family:'Space Grotesk',sans-serif;cursor:pointer}
 @keyframes faq-open{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes yt-in{from{opacity:0;transform:translateX(-110%)}to{opacity:1;transform:translateX(0)}}
 @keyframes yt-out{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-110%)}}
+@keyframes sparkle-fall{0%{transform:translateY(0) scale(1) rotate(0deg);opacity:1}100%{transform:translateY(60px) scale(0) rotate(180deg);opacity:0}}
+@keyframes reveal-up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes reveal-left{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes reveal-right{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes btn-flash{0%{box-shadow:0 0 0 0 rgba(168,85,247,0)}50%{box-shadow:0 0 0 12px rgba(168,85,247,.35)}100%{box-shadow:0 0 0 24px rgba(168,85,247,0)}}
+@keyframes comet3{0%{transform:translateX(0) translateY(0);opacity:.9}100%{transform:translateX(500px) translateY(280px);opacity:0}}
+@keyframes comet4{0%{transform:translateX(0) translateY(0);opacity:.7}100%{transform:translateX(-400px) translateY(320px);opacity:0}}
+@keyframes float-emoji{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-120px) scale(.4);opacity:0}}
 
 /* ── Fixed BG layer ── */
 #bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -298,6 +307,23 @@ footer a:hover{color:rgba(232,232,240,.7)}
 .yt-dismiss{padding:9px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(232,232,240,.4);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s ease;white-space:nowrap}
 .yt-dismiss:hover{border-color:rgba(255,255,255,.2);color:rgba(232,232,240,.8)}
 
+/* ── Scroll progress bar ── */
+#scroll-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#a855f7,#00d4ff,#ff4d6d);z-index:9999;width:0%;transition:width .1s linear;pointer-events:none;box-shadow:0 0 8px rgba(168,85,247,.8)}
+/* ── Sparkle cursor trail ── */
+.sparkle{position:fixed;pointer-events:none;z-index:9998;font-size:14px;line-height:1;animation:sparkle-fall .7s ease forwards}
+/* ── Scroll reveal ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-l{opacity:0;transform:translateX(-30px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.reveal-l.visible{opacity:1;transform:translateX(0)}
+.reveal-r{opacity:0;transform:translateX(30px);transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1)}
+.reveal-r.visible{opacity:1;transform:translateX(0)}
+/* ── Extra comets ── */
+.comet3{position:absolute;width:2px;height:50px;background:linear-gradient(180deg,rgba(255,77,109,.8),transparent);border-radius:2px;animation:comet3 5s 9s linear infinite;top:-50px;left:60%}
+.comet4{position:absolute;width:1px;height:40px;background:linear-gradient(180deg,rgba(74,222,128,.7),transparent);border-radius:2px;animation:comet4 7s 14s linear infinite;top:-40px;right:15%}
+/* ── Float emoji ── */
+.float-emoji{position:fixed;pointer-events:none;z-index:9997;font-size:20px;animation:float-emoji 1.4s ease forwards}
+
 /* ── Responsive ── */
 @media(max-width:900px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
@@ -320,6 +346,9 @@ footer a:hover{color:rgba(232,232,240,.7)}
 </head>
 <body>
 
+<!-- Scroll progress bar -->
+<div id="scroll-bar"></div>
+
 <!-- Background layer -->
 <div id="bg">
   <div id="grid"></div>
@@ -330,6 +359,8 @@ footer a:hover{color:rgba(232,232,240,.7)}
   <div id="scanline"></div>
   <div class="comet"></div>
   <div class="comet2"></div>
+  <div class="comet3"></div>
+  <div class="comet4"></div>
   <div id="particles"></div>
 </div>
 
@@ -443,7 +474,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
   </div>
 
   <!-- How It Works -->
-  <section id="how" style="width:100%;max-width:900px;margin-bottom:96px;animation:fadeInUp .8s .2s ease both">
+  <section id="how" class="reveal" style="width:100%;max-width:900px;margin-bottom:96px">
     <div class="section-hdr">
       <p class="section-tag">// HOW IT WORKS</p>
       <div class="section-line"></div>
@@ -476,7 +507,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
     <div class="cards-grid">
 
       <!-- MM2 -->
-      <div class="card-wrap">
+      <div class="card-wrap reveal-l">
         <div class="card card-mm2" data-card="mm2">
           <div class="card-header">
             <span class="card-badge badge-mm2">MM2</span>
@@ -518,7 +549,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
       </div>
 
       <!-- ADM -->
-      <div class="card-wrap">
+      <div class="card-wrap reveal">
         <div class="card card-adm" data-card="adm">
           <div class="card-header">
             <span class="card-badge badge-adm">ADM</span>
@@ -559,7 +590,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
       </div>
 
       <!-- MM2 Autofarm -->
-      <div class="card-wrap">
+      <div class="card-wrap reveal-r">
         <div class="card card-af" data-card="af">
           <div class="card-header">
             <span class="card-badge badge-af">MM2 · AF</span>
@@ -603,7 +634,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
   </section>
 
   <!-- Executors -->
-  <section id="executors" style="width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .9s ease both">
+  <section id="executors" class="reveal" style="width:100%;max-width:860px;margin-bottom:80px">
     <div class="section-hdr">
       <p class="section-tag">// RECOMMENDED EXECUTORS</p>
       <div class="section-line" style="background:linear-gradient(90deg,transparent,rgba(0,212,255,.6),transparent)"></div>
@@ -631,7 +662,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
   </section>
 
   <!-- FAQ -->
-  <section id="faq" style="width:100%;max-width:840px;margin-bottom:80px;animation:fadeInUp .8s 1s ease both">
+  <section id="faq" class="reveal" style="width:100%;max-width:840px;margin-bottom:80px">
     <div class="section-hdr">
       <p class="section-tag">// FAQ</p>
       <div class="section-line"></div>
@@ -640,7 +671,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
   </section>
 
   <!-- Community CTA -->
-  <section id="community" style="width:100%;max-width:700px;margin-bottom:80px;animation:fadeInUp .8s 1.05s ease both">
+  <section id="community" class="reveal" style="width:100%;max-width:700px;margin-bottom:80px">
     <div class="cta-card">
       <div class="cta-disc-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
@@ -754,6 +785,9 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFAQ();
   buildParticles();
   initYTCard();
+  initScrollProgress();
+  initScrollReveal();
+  initSparkles();
   initTypewriter();
   initMouse();
   initScrollNav();
@@ -773,6 +807,94 @@ document.addEventListener('DOMContentLoaded', () => {
   audio.loop = true;
   audio.volume = 0.4;
 });
+
+// ── Scroll progress bar ──
+function initScrollProgress() {
+  const bar = document.getElementById('scroll-bar');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = (window.scrollY / (doc.scrollHeight - doc.clientHeight)) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+}
+
+// ── Scroll reveal ──
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal,.reveal-l,.reveal-r');
+  if (!els.length) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        // stagger siblings
+        const siblings = [...e.target.parentElement.querySelectorAll('.reveal,.reveal-l,.reveal-r')];
+        const idx = siblings.indexOf(e.target);
+        e.target.style.transitionDelay = (idx * 0.08) + 's';
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(el => obs.observe(el));
+}
+
+// ── Sparkle cursor trail ──
+function initSparkles() {
+  const GLYPHS = ['✦','✧','⋆','*','·','◇','✺','⬡'];
+  const COLORS = ['#a855f7','#00d4ff','#ff4d6d','#4ade80','#fbbf24','#c084fc'];
+  let last = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if (now - last < 55) return; // throttle
+    last = now;
+    const s = document.createElement('span');
+    s.className = 'sparkle';
+    s.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+    s.style.cssText = [
+      `left:${e.clientX + (Math.random()*16-8)}px`,
+      `top:${e.clientY + (Math.random()*16-8)}px`,
+      `color:${COLORS[Math.floor(Math.random()*COLORS.length)]}`,
+      `font-size:${Math.floor(Math.random()*10+8)}px`,
+      `animation-duration:${(Math.random()*.4+.5).toFixed(2)}s`,
+    ].join(';');
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 800);
+  });
+}
+
+// ── Confetti on copy ──
+function fireConfetti(key) {
+  if (typeof confetti !== 'function') return;
+  const colors = { MM2:['#ff4d6d','#fff','#ff8fa3'], ADM:['#a855f7','#c084fc','#fff'], AF:['#f59e0b','#fbbf24','#fff'] };
+  const cols = colors[key] || ['#a855f7','#00d4ff','#fff'];
+  confetti({ particleCount: 90, spread: 70, origin: { y: 0.65 }, colors: cols, disableForReducedMotion: true });
+  setTimeout(() => confetti({ particleCount: 40, spread: 90, origin: { y: 0.6 }, colors: cols, disableForReducedMotion: true }), 150);
+}
+
+// ── Floating emoji burst on copy ──
+function floatEmoji(key) {
+  const sets = { MM2:['🔪','💀','👁️','🎯'], ADM:['🐾','🍼','💎','🦋'], AF:['⚡','🌾','💰','✨'] };
+  const emojis = sets[key] || ['⭐','✨','🎉'];
+  const btn = document.getElementById(`btn-${key.toLowerCase()}`);
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'float-emoji';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.cssText = [
+        `left:${rect.left + rect.width/2 + (Math.random()*60-30)}px`,
+        `top:${rect.top - 10}px`,
+        `animation-duration:${(.9 + Math.random()*.6).toFixed(2)}s`,
+        `animation-delay:${(Math.random()*.2).toFixed(2)}s`,
+        `font-size:${Math.floor(Math.random()*10+16)}px`,
+      ].join(';');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1600);
+    }, i * 60);
+  }
+}
 
 // ── YouTube sub card ──
 function initYTCard() {
@@ -1150,6 +1272,8 @@ function copyScript(key) {
     btn.textContent = '✓  COPIED!';
     showToast(`${GAME_NAMES[key]} script copied!`, key);
     document.dispatchEvent(new CustomEvent('rds:copied', { detail: { key } }));
+    fireConfetti(key);
+    floatEmoji(key);
 
     const timeOnPage = elapsed();
     const curScrollPct = scrollPct();
