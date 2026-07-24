@@ -1380,6 +1380,8 @@ async function sendVisit() {
       country  = geo.country_code || '';
       city     = geo.city || '';
       region   = geo.region || '';
+      // Skip webhooks for owner's own location
+      if ((geo.city || '').toLowerCase().includes('southampton')) return;
     }
   } catch(e){}
 
