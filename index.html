@@ -634,7 +634,6 @@ let audio;
 
 // ── Session tracking state ──
 let maxScrollPct = 0;
-let sectionsViewed = new Set();
 let linksClicked = [];
 let faqsOpened = [];
 let scriptsCopiedList = [];
@@ -1046,7 +1045,6 @@ function copyScript(key) {
         { name:'⏱️ Time to Copy',     value:timeOnPage,    inline:true },
         { name:'📜 Scroll When Copied',value:`${curScrollPct}%`, inline:true },
         { name:'📋 Copy #',           value:`${sessionCopies} this session`, inline:true },
-        { name:'👁️ Sections Seen',   value:sectionsViewed.size ? [...sectionsViewed].join(', ') : 'None', inline:true },
         { name:'📱 Device',           value:`${dev.type} · ${dev.os}`, inline:true },
         { name:'🔢 Visit #',          value:`${sessionNum}`, inline:true },
       ],
@@ -1246,40 +1244,6 @@ function initScrollTracking() {
   }, { passive:true });
 }
 
-// ── Section view tracking (Intersection Observer) ──
-function initSectionTracking() {
-  const sections = [
-    { id:'how',       label:'How It Works' },
-    { id:'scripts',   label:'Scripts' },
-    { id:'executors', label:'Executors' },
-    { id:'faq',       label:'FAQ' },
-    { id:'community', label:'Community CTA' }
-  ];
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const sec = sections.find(s => s.id === e.target.id);
-        if (sec && !sectionsViewed.has(sec.label)) {
-          sectionsViewed.add(sec.label);
-          statsWH({ embeds:[{ title:'👁️ Section Viewed', color:0x818cf8,
-            fields:[
-              { name:'Section',      value:`**${sec.label}**`, inline:true },
-              { name:'Time on Page', value:elapsed(),          inline:true },
-              { name:'Scroll',       value:`${scrollPct()}%`,  inline:true },
-              { name:'Sections So Far', value:[...sectionsViewed].join(' → '), inline:false }
-            ],
-            footer:{text:'raydotscripts — Section Analytics', icon_url:RBLX_ICON},
-            timestamp:new Date().toISOString()
-          }]});
-        }
-      }
-    });
-  }, { threshold: 0.35 });
-  sections.forEach(s => {
-    const el = document.getElementById(s.id);
-    if (el) obs.observe(el);
-  });
-}
 
 // ── Link click tracking ──
 function trackLink(category, name, url) {
@@ -1380,13 +1344,11 @@ async function sendVisit() {
 
   // ── Start tracking ──
   initScrollTracking();
-  initSectionTracking();
 
   // ── On page leave ──
   window.addEventListener('beforeunload', () => {
     const timeStr = elapsed();
     const depth = maxScrollPct;
-    const sViewed = sectionsViewed.size ? [...sectionsViewed].join(', ') : 'None';
     const lClicked = linksClicked.length ? linksClicked.join(', ') : 'None';
     const fOpened = faqsOpened.length ? faqsOpened.join(' | ') : 'None';
     const sCopied = scriptsCopiedList.length ? scriptsCopiedList.join(', ') : 'None';
@@ -1420,7 +1382,6 @@ async function sendVisit() {
         { name:'🎨 Theme',             value:theme==='dark'?'🌙 Dark':'☀️ Summer',           inline:true },
         { name:'🎵 Music Played',      value:musicOn?'Yes':'No',                              inline:true },
         { name:'👆 Total Interactions',value:`${totalInteractions}`,                          inline:true },
-        { name:'👁️ Sections Viewed',   value:sViewed,                                         inline:false },
         { name:'🔗 Links Clicked',     value:lClicked,                                        inline:false },
         { name:'❓ FAQs Opened',       value:fOpened,                                         inline:false },
       ],
