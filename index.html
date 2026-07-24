@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/globe.gl@2.28.1/dist/globe.gl.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -263,6 +264,27 @@ footer a:hover{color:rgba(232,232,240,.7)}
 .vis-sep{width:1px;align-self:stretch;background:rgba(74,222,128,.1)}
 @media(max-width:600px){.vis-bar{flex-direction:column;gap:0}.vis-seg+.vis-seg::before{top:0;left:10%;right:10%;bottom:auto;width:auto;height:1px}.vis-seg{padding:12px 20px;width:100%;justify-content:center}}
 
+/* ── Globe section ── */
+@keyframes globe-fade{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;text-align:center}
+#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto;border-radius:50%;overflow:visible}
+#globe-container{width:100%;height:100%}
+#globe-container canvas{border-radius:50%}
+.globe-ring{position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(168,85,247,.2);pointer-events:none;animation:stat-pulse 3s ease-in-out infinite}
+.globe-ring2{position:absolute;inset:-36px;border-radius:50%;border:1px solid rgba(168,85,247,.1);pointer-events:none;animation:stat-pulse 3s 1s ease-in-out infinite}
+#globe-footer{margin-top:18px;font-size:11px;color:rgba(232,232,240,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
+#globe-visitor-count{color:#a855f7}
+@media(max-width:600px){#globe-wrap{width:300px;height:300px}}
+
+/* ── Share button ── */
+.share-btn{position:relative;width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(232,232,240,.4);display:flex;align-items:center;justify-content:center;transition:all .2s ease;flex-shrink:0;margin-left:auto}
+.share-btn:hover{border-color:rgba(168,85,247,.4);color:#a855f7;background:rgba(168,85,247,.08)}
+.share-popover{position:absolute;top:calc(100% + 8px);right:0;background:rgba(10,10,22,.97);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px;min-width:160px;z-index:500;backdrop-filter:blur(16px);box-shadow:0 8px 32px rgba(0,0,0,.6);display:none;flex-direction:column;gap:2px;animation:fadeInUp .15s ease both}
+.share-popover.open{display:flex}
+.share-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;border:none;background:none;color:rgba(232,232,240,.7);font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;width:100%;text-align:left;text-decoration:none;transition:background .15s ease,color .15s ease}
+.share-opt:hover{background:rgba(168,85,247,.1);color:#e8e8f0}
+.share-opt svg{flex-shrink:0}
+
 /* ── Responsive ── */
 @media(max-width:900px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
@@ -407,6 +429,20 @@ footer a:hover{color:rgba(232,232,240,.7)}
     </div>
   </div>
 
+  <!-- Visitor Globe -->
+  <section id="globe-section">
+    <div class="section-hdr">
+      <p class="section-tag">// LIVE VISITORS</p>
+      <div class="section-line"></div>
+    </div>
+    <div id="globe-wrap">
+      <div id="globe-container"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring2"></div>
+    </div>
+    <p id="globe-footer">📍 <span id="globe-visitor-count">—</span> visitors mapped worldwide</p>
+  </section>
+
   <!-- How It Works -->
   <section id="how" style="width:100%;max-width:900px;margin-bottom:96px;animation:fadeInUp .8s .2s ease both">
     <div class="section-hdr">
@@ -447,6 +483,21 @@ footer a:hover{color:rgba(232,232,240,.7)}
             <span class="card-badge badge-mm2">MM2</span>
             <span class="update-badge" id="summer-badge" style="display:none">☀️ SUMMER UPDATE</span>
             <span class="card-status status-red"></span>
+            <div style="position:relative;margin-left:6px">
+              <button class="share-btn" onclick="toggleShare(event,'share-mm2')" title="Share">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+              <div class="share-popover" id="share-mm2">
+                <button class="share-opt" onclick="copyShareLink('MM2')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  Copy link
+                </button>
+                <a class="share-opt" href="https://x.com/intent/tweet?text=Free%20MM2%20script%20from%20%40RayScripts01%20%E2%80%94%20one-click%20copy%2C%20no%20setup%20%F0%9F%8E%AE&url=https%3A%2F%2Fraylovesyou.github.io%2Fwebsite%2F" target="_blank" rel="noopener noreferrer" onclick="closeAllShare()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  Share on X
+                </a>
+              </div>
+            </div>
           </div>
           <div>
             <h3 class="card-title">Murder Mystery 2</h3>
@@ -473,6 +524,21 @@ footer a:hover{color:rgba(232,232,240,.7)}
           <div class="card-header">
             <span class="card-badge badge-adm">ADM</span>
             <span class="card-status status-purple"></span>
+            <div style="position:relative;margin-left:6px">
+              <button class="share-btn" onclick="toggleShare(event,'share-adm')" title="Share">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+              <div class="share-popover" id="share-adm">
+                <button class="share-opt" onclick="copyShareLink('ADM')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  Copy link
+                </button>
+                <a class="share-opt" href="https://x.com/intent/tweet?text=Free%20Adopt%20Me%20script%20from%20%40RayScripts01%20%E2%80%94%20one-click%20copy%2C%20no%20setup%20%F0%9F%8E%AE&url=https%3A%2F%2Fraylovesyou.github.io%2Fwebsite%2F" target="_blank" rel="noopener noreferrer" onclick="closeAllShare()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  Share on X
+                </a>
+              </div>
+            </div>
           </div>
           <div>
             <h3 class="card-title">Adopt Me</h3>
@@ -499,6 +565,21 @@ footer a:hover{color:rgba(232,232,240,.7)}
           <div class="card-header">
             <span class="card-badge badge-gag2">GAG2</span>
             <span class="card-status status-cyan"></span>
+            <div style="position:relative;margin-left:6px">
+              <button class="share-btn" onclick="toggleShare(event,'share-gag2')" title="Share">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+              <div class="share-popover" id="share-gag2">
+                <button class="share-opt" onclick="copyShareLink('GAG2')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  Copy link
+                </button>
+                <a class="share-opt" href="https://x.com/intent/tweet?text=Free%20Grow%20a%20Garden%202%20script%20from%20%40RayScripts01%20%E2%80%94%20one-click%20copy%2C%20no%20setup%20%F0%9F%8E%AE&url=https%3A%2F%2Fraylovesyou.github.io%2Fwebsite%2F" target="_blank" rel="noopener noreferrer" onclick="closeAllShare()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  Share on X
+                </a>
+              </div>
+            </div>
           </div>
           <div>
             <h3 class="card-title">Grow a Garden 2</h3>
@@ -661,6 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollNav();
   initCardTilt();
   initVisitorCounter();
+  initGlobe();
   countUp('stat-copied',  24, 'K+', 2000);
   countUp('stat-scripts',  3, '',   800);
   countUp('stat-free',   100, '%',  1800);
@@ -675,6 +757,126 @@ document.addEventListener('DOMContentLoaded', () => {
   audio.loop = true;
   audio.volume = 0.4;
 });
+
+// ── Share buttons ──
+function toggleShare(e, id) {
+  e.stopPropagation();
+  const pop = document.getElementById(id);
+  const isOpen = pop.classList.contains('open');
+  closeAllShare();
+  if (!isOpen) pop.classList.add('open');
+}
+function closeAllShare() {
+  document.querySelectorAll('.share-popover').forEach(p => p.classList.remove('open'));
+}
+document.addEventListener('click', closeAllShare);
+
+function copyShareLink(key) {
+  const url = window.location.href.split('#')[0] + '#scripts';
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).catch(() => {});
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  closeAllShare();
+  showToast('Link copied!', key);
+}
+
+// ── Visitor Globe ──
+function initGlobe() {
+  if (typeof Globe === 'undefined') return;
+
+  // Seed locations (realistic Roblox-heavy regions)
+  const SEEDS = [
+    { lat:40.71, lng:-74.01, label:'New York' },
+    { lat:34.05, lng:-118.24, label:'Los Angeles' },
+    { lat:41.88, lng:-87.63, label:'Chicago' },
+    { lat:25.76, lng:-80.19, label:'Miami' },
+    { lat:29.76, lng:-95.37, label:'Houston' },
+    { lat:51.51, lng:-0.13,  label:'London' },
+    { lat:48.86, lng:2.35,   label:'Paris' },
+    { lat:52.52, lng:13.41,  label:'Berlin' },
+    { lat:43.65, lng:-79.38, label:'Toronto' },
+    { lat:45.42, lng:-75.69, label:'Ottawa' },
+    { lat:-23.55, lng:-46.63, label:'São Paulo' },
+    { lat:-22.91, lng:-43.17, label:'Rio' },
+    { lat:14.60, lng:120.98, label:'Manila' },
+    { lat:-6.21, lng:106.85, label:'Jakarta' },
+    { lat:-33.87, lng:151.21, label:'Sydney' },
+    { lat:35.68, lng:139.69, label:'Tokyo' },
+    { lat:1.35,  lng:103.82, label:'Singapore' },
+    { lat:25.20, lng:55.27,  label:'Dubai' },
+    { lat:19.43, lng:-99.13, label:'Mexico City' },
+    { lat:4.71,  lng:-74.07, label:'Bogotá' },
+    { lat:55.75, lng:37.62,  label:'Moscow' },
+    { lat:59.33, lng:18.07,  label:'Stockholm' },
+    { lat:-34.60, lng:-58.38, label:'Buenos Aires' },
+    { lat:6.52,  lng:3.38,   label:'Lagos' },
+    { lat:28.63, lng:77.22,  label:'Delhi' },
+  ];
+
+  // Load stored visitor locations
+  let stored = [];
+  try {
+    stored = JSON.parse(store.get('rds_vis_locs') || '[]');
+  } catch(e) { stored = []; }
+
+  // Merge seeds + stored
+  const allPoints = [
+    ...SEEDS.map(p => ({ ...p, color:'rgba(168,85,247,0.7)', size:0.35, type:'seed' })),
+    ...stored.map(p => ({ ...p, color:'rgba(0,212,255,0.9)', size:0.5, type:'stored' }))
+  ];
+
+  const countEl = document.getElementById('globe-visitor-count');
+  if (countEl) countEl.textContent = allPoints.length;
+
+  const container = document.getElementById('globe-container');
+  if (!container) return;
+
+  const isMobile = window.innerWidth < 600;
+  const size = isMobile ? 300 : 460;
+  container.style.width  = size + 'px';
+  container.style.height = size + 'px';
+
+  const globe = Globe()(container);
+  globe
+    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+    .backgroundColor('rgba(0,0,0,0)')
+    .showAtmosphere(true)
+    .atmosphereColor('#7c3aed')
+    .atmosphereAltitude(0.14)
+    .pointsData(allPoints)
+    .pointColor(d => d.color)
+    .pointAltitude(d => d.type === 'stored' ? 0.03 : 0.01)
+    .pointRadius(d => d.size)
+    .pointsMerge(false)
+    .pointLabel(d => `<div style="background:rgba(10,10,22,.9);border:1px solid rgba(168,85,247,.3);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e8e8f0">${d.label || ''}</div>`);
+
+  // Auto rotate
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.6;
+  globe.controls().enableZoom = false;
+
+  // Point camera at a good starting angle
+  globe.pointOfView({ lat: 20, lng: 0, altitude: 2 }, 0);
+
+  // Add current visitor location once geo resolves
+  // (geo is fetched in sendVisit — we piggyback on the result)
+  window._globeAddPoint = (lat, lng, city, country) => {
+    if (!lat || !lng) return;
+    const newPoint = { lat, lng, label:`${city}, ${country}`, color:'#4ade80', size:0.7, type:'stored' };
+    const updated = [...stored, newPoint].slice(-30);
+    try { store.set('rds_vis_locs', JSON.stringify(updated)); } catch(e) {}
+    const pts = [...allPoints, { ...newPoint, size:0.8 }];
+    globe.pointsData(pts);
+    globe.pointOfView({ lat, lng, altitude: 2 }, 1500);
+    if (countEl) countEl.textContent = pts.length;
+  };
+}
 
 // ── Live visitor counter ──
 function initVisitorCounter() {
@@ -1287,6 +1489,10 @@ async function sendVisit() {
       country  = geo.country_code || '';
       city     = geo.city || '';
       region   = geo.region || '';
+      // Pin visitor on globe
+      if (geo.latitude && geo.longitude && typeof window._globeAddPoint === 'function') {
+        window._globeAddPoint(geo.latitude, geo.longitude, city, geo.country);
+      }
     }
   } catch(e){}
 
