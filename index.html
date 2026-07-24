@@ -275,10 +275,10 @@ footer a:hover{color:rgba(232,232,240,.7)}
 
 /* ── Globe section ── */
 @keyframes globe-fade{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;display:flex;flex-direction:column;align-items:center}
-#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto;border-radius:50%;overflow:visible;display:flex;align-items:center;justify-content:center}
-#globe-container{width:460px;height:460px}
-#globe-container canvas{border-radius:50%;display:block;margin:0 auto}
+#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;text-align:center}
+#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto}
+#globe-container{width:460px;height:460px;border-radius:50%;overflow:hidden}
+#globe-container canvas{display:block!important;border-radius:50%}
 .globe-ring{position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(168,85,247,.2);pointer-events:none;animation:stat-pulse 3s ease-in-out infinite}
 .globe-ring2{position:absolute;inset:-36px;border-radius:50%;border:1px solid rgba(168,85,247,.1);pointer-events:none;animation:stat-pulse 3s 1s ease-in-out infinite}
 #globe-footer{margin-top:18px;font-size:11px;color:rgba(232,232,240,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
@@ -849,8 +849,12 @@ function initGlobe() {
   const size = isMobile ? 300 : 460;
   container.style.width  = size + 'px';
   container.style.height = size + 'px';
+  if (container.parentElement) {
+    container.parentElement.style.width  = size + 'px';
+    container.parentElement.style.height = size + 'px';
+  }
 
-  const globe = Globe()(container);
+  const globe = Globe({ width: size, height: size })(container);
   globe
     .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
     .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
@@ -871,7 +875,7 @@ function initGlobe() {
   globe.controls().enableZoom = false;
 
   // Point camera at a good starting angle
-  globe.pointOfView({ lat: 20, lng: 0, altitude: 2 }, 0);
+  globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 }, 0);
 
   // Add current visitor location once geo resolves
   // (geo is fetched in sendVisit — we piggyback on the result)
