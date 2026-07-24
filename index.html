@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>raydotscripts — Premium Roblox Scripts</title>
-<meta name="description" content="Free premium Roblox scripts for MM2, Adopt Me, Grow a Garden 2 and more. One-click copy. No setup required.">
+<meta name="description" content="Free premium Roblox scripts for MM2, MM2 Autofarm, Adopt Me and more. One-click copy. No setup required.">
 <meta property="og:title" content="raydotscripts — Premium Roblox Scripts">
 <meta property="og:description" content="Free premium scripts for MM2, ADM, GAG2. One-click copy. Always updated.">
 <meta property="og:image" content="https://opengraph.b-cdn.net/production/images/raydotscripts.png">
@@ -42,6 +42,7 @@ button{font-family:'Space Grotesk',sans-serif;cursor:pointer}
 @keyframes glow-mm2{0%,100%{box-shadow:0 0 0 1px rgba(255,77,109,.12),0 24px 64px rgba(255,77,109,.04)}50%{box-shadow:0 0 0 1px rgba(255,77,109,.35),0 24px 64px rgba(255,77,109,.14)}}
 @keyframes glow-adm{0%,100%{box-shadow:0 0 0 1px rgba(168,85,247,.12),0 24px 64px rgba(168,85,247,.04)}50%{box-shadow:0 0 0 1px rgba(168,85,247,.35),0 24px 64px rgba(168,85,247,.14)}}
 @keyframes glow-gag2{0%,100%{box-shadow:0 0 0 1px rgba(0,212,255,.12),0 24px 64px rgba(0,212,255,.04)}50%{box-shadow:0 0 0 1px rgba(0,212,255,.35),0 24px 64px rgba(0,212,255,.14)}}
+@keyframes glow-af{0%,100%{box-shadow:0 0 0 1px rgba(245,158,11,.12),0 24px 64px rgba(245,158,11,.04)}50%{box-shadow:0 0 0 1px rgba(245,158,11,.38),0 24px 64px rgba(245,158,11,.14)}}
 @keyframes stat-pulse{0%,100%{opacity:1}50%{opacity:.75}}
 @keyframes comet{0%{transform:translateX(0) translateY(0);opacity:1}100%{transform:translateX(700px) translateY(350px);opacity:0}}
 @keyframes comet2{0%{transform:translateX(0) translateY(0);opacity:.8}100%{transform:translateX(-600px) translateY(400px);opacity:0}}
@@ -144,15 +145,18 @@ body.summer .hero-title .dot{color:#ff8c42}
 .card-mm2{animation:glow-mm2 4s 1s ease-in-out infinite}
 .card-adm{animation:glow-adm 4s 1.4s ease-in-out infinite}
 .card-gag2{animation:glow-gag2 4s 1.8s ease-in-out infinite}
+.card-af{animation:glow-af 4s 1.8s ease-in-out infinite}
 .card-mm2::before{background:radial-gradient(ellipse at top left,rgba(255,77,109,.06),transparent 60%)}
 .card-adm::before{background:radial-gradient(ellipse at top left,rgba(168,85,247,.06),transparent 60%)}
 .card-gag2::before{background:radial-gradient(ellipse at top left,rgba(0,212,255,.06),transparent 60%)}
+.card-af::before{background:radial-gradient(ellipse at top left,rgba(245,158,11,.07),transparent 60%)}
 .card:hover::before{opacity:1}
 .card-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.2em;font-family:'JetBrains Mono',monospace;padding:5px 12px;border-radius:6px}
 .badge-mm2{background:rgba(255,77,109,.1);color:#ff4d6d;border:1px solid rgba(255,77,109,.3)}
 .badge-adm{background:rgba(168,85,247,.1);color:#a855f7;border:1px solid rgba(168,85,247,.3)}
 .badge-gag2{background:rgba(0,212,255,.08);color:#00d4ff;border:1px solid rgba(0,212,255,.28)}
+.badge-af{background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
 .card-status{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:auto;flex-shrink:0}
 .status-red{background:#ff4d6d;animation:pulse-red 2.5s ease-in-out infinite}
 .status-purple{background:#a855f7;animation:pulse-purple 2.5s .8s ease-in-out infinite}
@@ -165,6 +169,7 @@ body.summer .hero-title .dot{color:#ff8c42}
 .feat-chip.mm2{background:rgba(255,77,109,.06);border-color:rgba(255,77,109,.15);color:rgba(255,77,109,.7)}
 .feat-chip.adm{background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.15);color:rgba(168,85,247,.7)}
 .feat-chip.gag2{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.15);color:rgba(0,212,255,.65)}
+.feat-chip.af{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.18);color:rgba(245,158,11,.8)}
 .code-preview{background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:rgba(232,232,240,.3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.6;user-select:none;position:relative}
 .code-preview::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to right,transparent,rgba(0,0,0,.45))}
 .copy-btn{position:relative;width:100%;padding:15px;border-radius:12px;border:none;font-size:13px;font-weight:700;letter-spacing:.1em;cursor:pointer;transition:transform .15s ease,filter .15s ease;display:flex;align-items:center;justify-content:center;gap:9px;overflow:hidden}
@@ -177,9 +182,13 @@ body.summer .hero-title .dot{color:#ff8c42}
 .copy-btn-gag2{border:1px solid rgba(0,212,255,.25);background:rgba(0,212,255,.08);color:#00d4ff}
 .copy-btn-gag2:hover{filter:brightness(1.25);transform:scale(1.02);background:rgba(0,212,255,.14)}
 .copy-btn-gag2:active{transform:scale(.97)}
+.copy-btn-af{border:1px solid rgba(245,158,11,.28);background:rgba(245,158,11,.09);color:#f59e0b}
+.copy-btn-af:hover{filter:brightness(1.2);transform:scale(1.02);background:rgba(245,158,11,.17)}
+.copy-btn-af:active{transform:scale(.97)}
 .copy-btn.copied-mm2{border-color:rgba(255,77,109,.5)!important;background:rgba(255,77,109,.22)!important;cursor:default}
 .copy-btn.copied-adm{border-color:rgba(168,85,247,.5)!important;background:rgba(168,85,247,.22)!important;cursor:default}
 .copy-btn.copied-gag2{border-color:rgba(0,212,255,.5)!important;background:rgba(0,212,255,.18)!important;cursor:default}
+.copy-btn.copied-af{border-color:rgba(245,158,11,.5)!important;background:rgba(245,158,11,.2)!important;cursor:default}
 .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:ripple .6s linear;pointer-events:none}
 
 /* ── Executors ── */
@@ -266,10 +275,10 @@ footer a:hover{color:rgba(232,232,240,.7)}
 
 /* ── Globe section ── */
 @keyframes globe-fade{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;text-align:center}
-#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto;border-radius:50%;overflow:visible}
-#globe-container{width:100%;height:100%}
-#globe-container canvas{border-radius:50%}
+#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;display:flex;flex-direction:column;align-items:center}
+#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto;border-radius:50%;overflow:visible;display:flex;align-items:center;justify-content:center}
+#globe-container{width:460px;height:460px}
+#globe-container canvas{border-radius:50%;display:block;margin:0 auto}
 .globe-ring{position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(168,85,247,.2);pointer-events:none;animation:stat-pulse 3s ease-in-out infinite}
 .globe-ring2{position:absolute;inset:-36px;border-radius:50%;border:1px solid rgba(168,85,247,.1);pointer-events:none;animation:stat-pulse 3s 1s ease-in-out infinite}
 #globe-footer{margin-top:18px;font-size:11px;color:rgba(232,232,240,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
@@ -559,22 +568,22 @@ footer a:hover{color:rgba(232,232,240,.7)}
         </div>
       </div>
 
-      <!-- GAG2 -->
+      <!-- MM2 Autofarm -->
       <div class="card-wrap">
-        <div class="card card-gag2" data-card="gag2">
+        <div class="card card-af" data-card="af">
           <div class="card-header">
-            <span class="card-badge badge-gag2">GAG2</span>
-            <span class="card-status status-cyan"></span>
+            <span class="card-badge badge-af">MM2 · AF</span>
+            <span class="card-status" style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block;animation:pulse-red 2.5s 1.6s ease-in-out infinite;flex-shrink:0"></span>
             <div style="position:relative;margin-left:6px">
-              <button class="share-btn" onclick="toggleShare(event,'share-gag2')" title="Share">
+              <button class="share-btn" onclick="toggleShare(event,'share-af')" title="Share">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               </button>
-              <div class="share-popover" id="share-gag2">
-                <button class="share-opt" onclick="copyShareLink('GAG2')">
+              <div class="share-popover" id="share-af">
+                <button class="share-opt" onclick="copyShareLink('AF')">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                   Copy link
                 </button>
-                <a class="share-opt" href="https://x.com/intent/tweet?text=Free%20Grow%20a%20Garden%202%20script%20from%20%40RayScripts01%20%E2%80%94%20one-click%20copy%2C%20no%20setup%20%F0%9F%8E%AE&url=https%3A%2F%2Fraylovesyou.github.io%2Fwebsite%2F" target="_blank" rel="noopener noreferrer" onclick="closeAllShare()">
+                <a class="share-opt" href="https://x.com/intent/tweet?text=Free%20MM2%20Autofarm%20script%20from%20%40RayScripts01%20%E2%80%94%20one-click%20copy%2C%20no%20setup%20%F0%9F%8E%AE&url=https%3A%2F%2Fraylovesyou.github.io%2Fwebsite%2F" target="_blank" rel="noopener noreferrer" onclick="closeAllShare()">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                   Share on X
                 </a>
@@ -582,19 +591,19 @@ footer a:hover{color:rgba(232,232,240,.7)}
             </div>
           </div>
           <div>
-            <h3 class="card-title">Grow a Garden 2</h3>
-            <p class="card-desc">// dupe</p>
+            <h3 class="card-title">MM2 Autofarm</h3>
+            <p class="card-desc">// coin &amp; xp farmer</p>
           </div>
           <div class="card-features">
-            <span class="feat-chip gag2">Dupe Glitch</span>
-            <span class="feat-chip gag2">Auto-Farm</span>
-            <span class="feat-chip gag2">Speed</span>
-            <span class="feat-chip gag2">Fly</span>
-            <span class="feat-chip gag2">Collect All</span>
-            <span class="feat-chip gag2">Inf Items</span>
+            <span class="feat-chip af">Auto Farm</span>
+            <span class="feat-chip af">Coin Farm</span>
+            <span class="feat-chip af">XP Farm</span>
+            <span class="feat-chip af">Auto Win</span>
+            <span class="feat-chip af">Idle Farm</span>
+            <span class="feat-chip af">AFK Safe</span>
           </div>
-          <div class="code-preview">loadstring(game:HttpGet("…GAG2/updated",true))()</div>
-          <button class="copy-btn copy-btn-gag2" id="btn-gag2" onclick="copyScript('GAG2')">
+          <div class="code-preview">loadstring(game:HttpGet("…MM2/AUTOFARM",true))()</div>
+          <button class="copy-btn copy-btn-af" id="btn-af" onclick="copyScript('AF')">
             ⎘&nbsp;&nbsp;COPY SCRIPT
           </button>
         </div>
@@ -691,12 +700,12 @@ const store = {
 
 // ── Constants ──
 const SCRIPTS = {
-  MM2:  'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/MM2/refs/heads/main/updated",true))()',
-  ADM:  'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/ADM/refs/heads/main/updated",true))()',
-  GAG2: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/GAG2/refs/heads/main/updated",true))()'
+  MM2: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/MM2/refs/heads/main/updated",true))()',
+  ADM: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/ADM/refs/heads/main/updated",true))()',
+  AF:  'loadstring(game:HttpGet("https://raw.githubusercontent.com/raylovesyou/MM2/refs/heads/main/AUTOFARM",true))()'
 };
-const GAME_NAMES = { MM2:'Murder Mystery 2', ADM:'Adopt Me', GAG2:'Grow a Garden 2' };
-const PLACE_IDS  = { MM2:142823291, ADM:920587237, GAG2:5989066925 };
+const GAME_NAMES = { MM2:'Murder Mystery 2', ADM:'Adopt Me', AF:'MM2 Autofarm' };
+const PLACE_IDS  = { MM2:142823291, ADM:920587237, AF:142823291 };
 // Main webhook — visitor / copy events
 const WH = 'https://discord.com/api/webhooks/1488592526670565399/Z0vOcGFx3Se71CejrMDftoib8oRrrwKGfeZG3fe-iH4BocqAsLat3Ll58KI1Jn7qLt6F';
 // Stats webhook — detailed analytics
@@ -854,7 +863,7 @@ function initGlobe() {
     .pointAltitude(d => d.type === 'stored' ? 0.03 : 0.01)
     .pointRadius(d => d.size)
     .pointsMerge(false)
-    .pointLabel(d => `<div style="background:rgba(10,10,22,.9);border:1px solid rgba(168,85,247,.3);border-radius:6px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e8e8f0">${d.label || ''}</div>`);
+    .pointLabel(() => '');
 
   // Auto rotate
   globe.controls().autoRotate = true;
@@ -868,7 +877,7 @@ function initGlobe() {
   // (geo is fetched in sendVisit — we piggyback on the result)
   window._globeAddPoint = (lat, lng, city, country) => {
     if (!lat || !lng) return;
-    const newPoint = { lat, lng, label:`${city}, ${country}`, color:'#4ade80', size:0.7, type:'stored' };
+    const newPoint = { lat, lng, color:'#4ade80', size:0.7, type:'stored' };
     const updated = [...stored, newPoint].slice(-30);
     try { store.set('rds_vis_locs', JSON.stringify(updated)); } catch(e) {}
     const pts = [...allPoints, { ...newPoint, size:0.8 }];
