@@ -1052,7 +1052,6 @@ function copyScript(key) {
         { name:'⏱️ Time to Copy',     value:timeOnPage,    inline:true },
         { name:'📜 Scroll When Copied',value:`${curScrollPct}%`, inline:true },
         { name:'📋 Copy #',           value:`${sessionCopies} this session`, inline:true },
-        { name:'📍 Milestones Hit',   value:scrollMilestonesHit.size ? [...scrollMilestonesHit].sort((a,b)=>a-b).map(m=>m+'%').join(', ') : 'None', inline:true },
         { name:'👁️ Sections Seen',   value:sectionsViewed.size ? [...sectionsViewed].join(', ') : 'None', inline:true },
         { name:'📱 Device',           value:`${dev.type} · ${dev.os}`, inline:true },
         { name:'🔢 Visit #',          value:`${sessionNum}`, inline:true },
@@ -1250,22 +1249,6 @@ function initScrollTracking() {
   window.addEventListener('scroll', () => {
     const pct = scrollPct();
     if (pct > maxScrollPct) maxScrollPct = pct;
-    [25, 50, 75, 100].forEach(milestone => {
-      if (pct >= milestone && !scrollMilestonesHit.has(milestone)) {
-        scrollMilestonesHit.add(milestone);
-        statsWH({ embeds:[{ title:`📍 Scroll Milestone — ${milestone}%`, color: milestone===100?0x4ade80:milestone===75?0xa855f7:milestone===50?0x00d4ff:0xfbbf24,
-          fields:[
-            { name:'Milestone',      value:`**${milestone}%** of page read`, inline:true },
-            { name:'Time on Page',   value:elapsed(),                        inline:true },
-            { name:'Theme',          value:theme==='dark'?'🌙 Dark':'☀️ Summer', inline:true },
-            { name:'Scripts Copied', value:`${sessionCopies}`,               inline:true },
-            { name:'Sections Seen',  value:sectionsViewed.size ? [...sectionsViewed].join(', ') : 'None yet', inline:false }
-          ],
-          footer:{text:'raydotscripts — Scroll Analytics', icon_url:RBLX_ICON},
-          timestamp:new Date().toISOString()
-        }]});
-      }
-    });
   }, { passive:true });
 }
 
@@ -1413,20 +1396,18 @@ async function sendVisit() {
     const lClicked = linksClicked.length ? linksClicked.join(', ') : 'None';
     const fOpened = faqsOpened.length ? faqsOpened.join(' | ') : 'None';
     const sCopied = scriptsCopiedList.length ? scriptsCopiedList.join(', ') : 'None';
-    const milestones = scrollMilestonesHit.size ? [...scrollMilestonesHit].sort((a,b)=>a-b).map(m=>m+'%').join(', ') : 'None';
 
     // Main webhook — leave
     sendBeaconTo(WH, { embeds:[{
       title:'🚪  Visitor Left',
       color:0x636e72,
       fields:[
-        { name:'⏱️ Time on Page',      value:timeStr,         inline:true },
-        { name:'📜 Max Scroll Depth',  value:`${depth}%`,     inline:true },
-        { name:'📋 Scripts Copied',    value:`${sessionCopies} (${sCopied})`, inline:true },
-        { name:'🎯 First Hovered',     value:firstHover||'None', inline:true },
-        { name:'🔗 Links Clicked',     value:lClicked,        inline:true },
-        { name:'🎨 Theme Used',        value:theme==='dark'?'🌙 Dark':'☀️ Summer', inline:true },
-        { name:'📍 Scroll Milestones', value:milestones,      inline:false }
+        { name:'⏱️ Time on Page',     value:timeStr,                                 inline:true },
+        { name:'📜 Max Scroll Depth', value:`${depth}%`,                             inline:true },
+        { name:'📋 Scripts Copied',   value:`${sessionCopies} (${sCopied})`,         inline:true },
+        { name:'🎯 First Hovered',    value:firstHover||'None',                      inline:true },
+        { name:'🔗 Links Clicked',    value:lClicked,                                inline:true },
+        { name:'🎨 Theme Used',       value:theme==='dark'?'🌙 Dark':'☀️ Summer',   inline:true },
       ],
       footer:{ text:'raydotscripts', icon_url:RBLX_ICON },
       timestamp:new Date().toISOString()
@@ -1438,17 +1419,16 @@ async function sendVisit() {
       color:0x00d4ff,
       description:`Session **#${sessionNum}** complete`,
       fields:[
-        { name:'⏱️ Duration',         value:timeStr,          inline:true },
-        { name:'📜 Max Scroll',       value:`${depth}%`,      inline:true },
-        { name:'📍 Milestones Hit',   value:milestones,       inline:true },
-        { name:'📋 Scripts Copied',   value:`${sessionCopies}${sCopied!=='None'?' ('+sCopied+')':''}`, inline:true },
-        { name:'🎯 First Hovered',    value:firstHover||'None', inline:true },
-        { name:'🎨 Theme',            value:theme==='dark'?'🌙 Dark':'☀️ Summer', inline:true },
-        { name:'🎵 Music Played',     value:musicOn?'Yes':'No',  inline:true },
-        { name:'👆 Total Interactions',value:`${totalInteractions}`, inline:true },
-        { name:'👁️ Sections Viewed',  value:sViewed,          inline:false },
-        { name:'🔗 Links Clicked',    value:lClicked,         inline:false },
-        { name:'❓ FAQs Opened',      value:fOpened,          inline:false },
+        { name:'⏱️ Duration',          value:timeStr,                                         inline:true },
+        { name:'📜 Max Scroll',        value:`${depth}%`,                                     inline:true },
+        { name:'📋 Scripts Copied',    value:`${sessionCopies}${sCopied!=='None'?' ('+sCopied+')':''}`, inline:true },
+        { name:'🎯 First Hovered',     value:firstHover||'None',                              inline:true },
+        { name:'🎨 Theme',             value:theme==='dark'?'🌙 Dark':'☀️ Summer',           inline:true },
+        { name:'🎵 Music Played',      value:musicOn?'Yes':'No',                              inline:true },
+        { name:'👆 Total Interactions',value:`${totalInteractions}`,                          inline:true },
+        { name:'👁️ Sections Viewed',   value:sViewed,                                         inline:false },
+        { name:'🔗 Links Clicked',     value:lClicked,                                        inline:false },
+        { name:'❓ FAQs Opened',       value:fOpened,                                         inline:false },
       ],
       footer:{ text:'raydotscripts · stats webhook · session end', icon_url:RBLX_ICON },
       timestamp:new Date().toISOString()
