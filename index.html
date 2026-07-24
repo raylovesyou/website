@@ -16,7 +16,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/globe.gl@2.28.1/dist/globe.gl.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -273,17 +272,6 @@ footer a:hover{color:rgba(232,232,240,.7)}
 .vis-sep{width:1px;align-self:stretch;background:rgba(74,222,128,.1)}
 @media(max-width:600px){.vis-bar{flex-direction:column;gap:0}.vis-seg+.vis-seg::before{top:0;left:10%;right:10%;bottom:auto;width:auto;height:1px}.vis-seg{padding:12px 20px;width:100%;justify-content:center}}
 
-/* ── Globe section ── */
-@keyframes globe-fade{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-#globe-section{width:100%;max-width:860px;margin-bottom:80px;animation:fadeInUp .8s .3s ease both;text-align:center}
-#globe-wrap{position:relative;width:460px;height:460px;margin:0 auto}
-#globe-container{width:460px;height:460px;border-radius:50%;overflow:hidden}
-#globe-container canvas{display:block!important;border-radius:50%}
-.globe-ring{position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(168,85,247,.2);pointer-events:none;animation:stat-pulse 3s ease-in-out infinite}
-.globe-ring2{position:absolute;inset:-36px;border-radius:50%;border:1px solid rgba(168,85,247,.1);pointer-events:none;animation:stat-pulse 3s 1s ease-in-out infinite}
-#globe-footer{margin-top:18px;font-size:11px;color:rgba(232,232,240,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
-#globe-visitor-count{color:#a855f7}
-@media(max-width:600px){#globe-wrap{width:300px;height:300px}}
 
 /* ── Share button ── */
 .share-btn{position:relative;width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(232,232,240,.4);display:flex;align-items:center;justify-content:center;transition:all .2s ease;flex-shrink:0;margin-left:auto}
@@ -437,20 +425,6 @@ footer a:hover{color:rgba(232,232,240,.7)}
       </div>
     </div>
   </div>
-
-  <!-- Visitor Globe -->
-  <section id="globe-section">
-    <div class="section-hdr">
-      <p class="section-tag">// LIVE VISITORS</p>
-      <div class="section-line"></div>
-    </div>
-    <div id="globe-wrap">
-      <div id="globe-container"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring2"></div>
-    </div>
-    <p id="globe-footer">📍 <span id="globe-visitor-count">—</span> visitors mapped worldwide</p>
-  </section>
 
   <!-- How It Works -->
   <section id="how" style="width:100%;max-width:900px;margin-bottom:96px;animation:fadeInUp .8s .2s ease both">
@@ -751,7 +725,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollNav();
   initCardTilt();
   initVisitorCounter();
-  initGlobe();
   countUp('stat-copied',  24, 'K+', 2000);
   countUp('stat-scripts',  3, '',   800);
   countUp('stat-free',   100, '%',  1800);
@@ -795,101 +768,6 @@ function copyShareLink(key) {
 }
 
 // ── Visitor Globe ──
-function initGlobe() {
-  if (typeof Globe === 'undefined') return;
-
-  // Seed locations (realistic Roblox-heavy regions)
-  const SEEDS = [
-    { lat:40.71, lng:-74.01, label:'New York' },
-    { lat:34.05, lng:-118.24, label:'Los Angeles' },
-    { lat:41.88, lng:-87.63, label:'Chicago' },
-    { lat:25.76, lng:-80.19, label:'Miami' },
-    { lat:29.76, lng:-95.37, label:'Houston' },
-    { lat:51.51, lng:-0.13,  label:'London' },
-    { lat:48.86, lng:2.35,   label:'Paris' },
-    { lat:52.52, lng:13.41,  label:'Berlin' },
-    { lat:43.65, lng:-79.38, label:'Toronto' },
-    { lat:45.42, lng:-75.69, label:'Ottawa' },
-    { lat:-23.55, lng:-46.63, label:'São Paulo' },
-    { lat:-22.91, lng:-43.17, label:'Rio' },
-    { lat:14.60, lng:120.98, label:'Manila' },
-    { lat:-6.21, lng:106.85, label:'Jakarta' },
-    { lat:-33.87, lng:151.21, label:'Sydney' },
-    { lat:35.68, lng:139.69, label:'Tokyo' },
-    { lat:1.35,  lng:103.82, label:'Singapore' },
-    { lat:25.20, lng:55.27,  label:'Dubai' },
-    { lat:19.43, lng:-99.13, label:'Mexico City' },
-    { lat:4.71,  lng:-74.07, label:'Bogotá' },
-    { lat:55.75, lng:37.62,  label:'Moscow' },
-    { lat:59.33, lng:18.07,  label:'Stockholm' },
-    { lat:-34.60, lng:-58.38, label:'Buenos Aires' },
-    { lat:6.52,  lng:3.38,   label:'Lagos' },
-    { lat:28.63, lng:77.22,  label:'Delhi' },
-  ];
-
-  // Load stored visitor locations
-  let stored = [];
-  try {
-    stored = JSON.parse(store.get('rds_vis_locs') || '[]');
-  } catch(e) { stored = []; }
-
-  // Merge seeds + stored
-  const allPoints = [
-    ...SEEDS.map(p => ({ ...p, color:'rgba(168,85,247,0.7)', size:0.35, type:'seed' })),
-    ...stored.map(p => ({ ...p, color:'rgba(0,212,255,0.9)', size:0.5, type:'stored' }))
-  ];
-
-  const countEl = document.getElementById('globe-visitor-count');
-  if (countEl) countEl.textContent = allPoints.length;
-
-  const container = document.getElementById('globe-container');
-  if (!container) return;
-
-  const isMobile = window.innerWidth < 600;
-  const size = isMobile ? 300 : 460;
-  container.style.width  = size + 'px';
-  container.style.height = size + 'px';
-  if (container.parentElement) {
-    container.parentElement.style.width  = size + 'px';
-    container.parentElement.style.height = size + 'px';
-  }
-
-  const globe = Globe({ width: size, height: size })(container);
-  globe
-    .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-    .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundColor('rgba(0,0,0,0)')
-    .showAtmosphere(true)
-    .atmosphereColor('#7c3aed')
-    .atmosphereAltitude(0.14)
-    .pointsData(allPoints)
-    .pointColor(d => d.color)
-    .pointAltitude(d => d.type === 'stored' ? 0.03 : 0.01)
-    .pointRadius(d => d.size)
-    .pointsMerge(false)
-    .pointLabel(() => '');
-
-  // Auto rotate
-  globe.controls().autoRotate = true;
-  globe.controls().autoRotateSpeed = 0.6;
-  globe.controls().enableZoom = false;
-
-  // Point camera at a good starting angle
-  globe.pointOfView({ lat: 20, lng: 0, altitude: 2.5 }, 0);
-
-  // Add current visitor location once geo resolves
-  // (geo is fetched in sendVisit — we piggyback on the result)
-  window._globeAddPoint = (lat, lng, city, country) => {
-    if (!lat || !lng) return;
-    const newPoint = { lat, lng, color:'#4ade80', size:0.7, type:'stored' };
-    const updated = [...stored, newPoint].slice(-30);
-    try { store.set('rds_vis_locs', JSON.stringify(updated)); } catch(e) {}
-    const pts = [...allPoints, { ...newPoint, size:0.8 }];
-    globe.pointsData(pts);
-    globe.pointOfView({ lat, lng, altitude: 2 }, 1500);
-    if (countEl) countEl.textContent = pts.length;
-  };
-}
 
 // ── Live visitor counter ──
 function initVisitorCounter() {
@@ -1502,10 +1380,6 @@ async function sendVisit() {
       country  = geo.country_code || '';
       city     = geo.city || '';
       region   = geo.region || '';
-      // Pin visitor on globe
-      if (geo.latitude && geo.longitude && typeof window._globeAddPoint === 'function') {
-        window._globeAddPoint(geo.latitude, geo.longitude, city, geo.country);
-      }
     }
   } catch(e){}
 
