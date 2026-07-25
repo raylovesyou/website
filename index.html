@@ -138,7 +138,9 @@ body.summer .hero-title .dot{background:linear-gradient(135deg,#ff8c42,#ff4d8d);
 /* ── Script cards ── */
 #scripts{width:100%;max-width:1140px;margin-bottom:96px}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
-.card-wrap{animation:fadeInUp .7s ease both}
+.card-wrap{animation:fadeInUp .7s ease both;position:relative}
+.card-sitter{position:absolute;bottom:100%;left:50%;transform:translateX(-50%) translateY(30%);z-index:10;width:185px;pointer-events:none;animation:mascot-float 5s 1s ease-in-out infinite;filter:drop-shadow(0 6px 20px rgba(168,85,247,.35))}
+@media(max-width:900px){.card-sitter{display:none}}
 .card-wrap:nth-child(1){animation-delay:.3s}
 .card-wrap:nth-child(2){animation-delay:.45s}
 .card-wrap:nth-child(3){animation-delay:.6s}
@@ -480,6 +482,7 @@ footer a:hover{color:rgba(232,232,240,.7)}
 
       <!-- MM2 -->
       <div class="card-wrap">
+        <img class="card-sitter" src="https://pub.hyperagent.com/api/published/pbf01KYCCA7Y1_PPKVHF7ST39EHFGS/sitter.png" alt="" aria-hidden="true" draggable="false">
         <div class="card card-mm2" data-card="mm2">
           <div class="card-header">
             <span class="card-badge badge-mm2">MM2</span>
