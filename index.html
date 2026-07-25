@@ -297,6 +297,10 @@ footer a:hover{color:rgba(232,232,240,.7)}
 #mascot-wrap img{width:100%;height:auto;filter:drop-shadow(0 6px 28px rgba(168,85,247,.35)) drop-shadow(0 2px 8px rgba(0,0,0,.4))}
 @media(max-width:1200px){#mascot-wrap{display:none}}
 
+/* ── Decorative girls ── */
+.deco-girl{position:absolute;pointer-events:none;z-index:2;opacity:.88;filter:drop-shadow(0 4px 20px rgba(168,85,247,.3));display:none}
+@media(min-width:1380px){.deco-girl{display:block}}
+
 /* ── Responsive ── */
 @media(max-width:900px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
@@ -684,6 +688,11 @@ footer a:hover{color:rgba(232,232,240,.7)}
     <p>© 2026 raydotscripts — built for the community · use scripts at your own risk</p>
   </footer>
 
+  <!-- Decorative anime girls -->
+  <img id="deco1" class="deco-girl" src="https://pub.hyperagent.com/api/published/pbf01KYCG3JD8_AKW9TPH6XYWWFAR4/girl1.png" alt="" aria-hidden="true" draggable="false" style="width:140px">
+  <img id="deco2" class="deco-girl" src="https://pub.hyperagent.com/api/published/pbf01KYCG3JV0_N55VX3XE5GF42SJT/girl2.png" alt="" aria-hidden="true" draggable="false" style="width:170px">
+  <img id="deco3" class="deco-girl" src="https://pub.hyperagent.com/api/published/pbf01KYCG3K33_3HEGQX8DB3JDMJC7/girl3.png" alt="" aria-hidden="true" draggable="false" style="width:160px">
+
 </div><!-- end #main -->
 
 <script>
@@ -752,6 +761,8 @@ document.addEventListener('DOMContentLoaded', () => {
   countUp('stat-free',   100, '%',  1800);
   countUp('stat-hours',   24, '/7', 1200);
   sendVisit();
+  setTimeout(positionDecoGirls, 200);
+  window.addEventListener('resize', positionDecoGirls, { passive:true });
   // Summer detection (June–Aug)
   const month = new Date().getMonth();
   if (month >= 5 && month <= 7) {
@@ -761,6 +772,33 @@ document.addEventListener('DOMContentLoaded', () => {
   audio.loop = true;
   audio.volume = 0.4;
 });
+
+// ── Decorative girls positioning ──
+function positionDecoGirls() {
+  const main = document.getElementById('main');
+  if (!main) return;
+  const mainTop = main.getBoundingClientRect().top + window.scrollY;
+  const placements = [
+    { id:'deco1', sectionId:'how',       side:'right', offsetY:-20 },
+    { id:'deco2', sectionId:'executors', side:'left',  offsetY:-10 },
+    { id:'deco3', sectionId:'faq',       side:'right', offsetY:-30 },
+  ];
+  placements.forEach(({ id, sectionId, side, offsetY }) => {
+    const el = document.getElementById(id);
+    const sec = document.getElementById(sectionId);
+    if (!el || !sec) return;
+    const r = sec.getBoundingClientRect();
+    const secTop = r.top + window.scrollY - mainTop;
+    el.style.top = (secTop + r.height / 2 - el.offsetHeight / 2 + offsetY) + 'px';
+    if (side === 'right') {
+      el.style.left = 'auto';
+      el.style.right = 'max(8px, calc(50% - 660px))';
+    } else {
+      el.style.right = 'auto';
+      el.style.left = 'max(8px, calc(50% - 720px))';
+    }
+  });
+}
 
 // ── Share buttons ──
 function toggleShare(e, id) {
