@@ -52,6 +52,9 @@ button{font-family:'Space Grotesk',sans-serif;cursor:pointer}
 @keyframes ripple{0%{transform:scale(0);opacity:.6}100%{transform:scale(4);opacity:0}}
 @keyframes nav-slide{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes faq-open{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blob-morph{0%{border-radius:60% 40% 30% 70% / 60% 30% 70% 40%;transform:rotate(0deg) scale(1)}25%{border-radius:30% 60% 70% 40% / 50% 60% 30% 60%;transform:rotate(90deg) scale(1.05)}50%{border-radius:50% 60% 30% 70% / 30% 40% 70% 50%;transform:rotate(180deg) scale(.95)}75%{border-radius:70% 30% 60% 40% / 40% 70% 30% 60%;transform:rotate(270deg) scale(1.08)}100%{border-radius:60% 40% 30% 70% / 60% 30% 70% 40%;transform:rotate(360deg) scale(1)}}
+@keyframes blob-morph2{0%{border-radius:40% 60% 60% 40% / 40% 50% 60% 50%;transform:rotate(0deg) scale(1)}33%{border-radius:60% 40% 30% 70% / 60% 30% 60% 40%;transform:rotate(120deg) scale(1.06)}66%{border-radius:30% 70% 50% 50% / 50% 40% 60% 50%;transform:rotate(240deg) scale(.94)}100%{border-radius:40% 60% 60% 40% / 40% 50% 60% 50%;transform:rotate(360deg) scale(1)}}
+@keyframes card-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.007)}}
 
 /* ── Fixed BG layer ── */
 #bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -138,7 +141,11 @@ body.summer .hero-title .dot{background:linear-gradient(135deg,#ff8c42,#ff4d8d);
 .card-wrap:nth-child(1){animation-delay:.3s}
 .card-wrap:nth-child(2){animation-delay:.45s}
 .card-wrap:nth-child(3){animation-delay:.6s}
-.card{background:rgba(10,10,22,.88);border-radius:20px;padding:28px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:20px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.card{background:rgba(10,10,22,.88);border-radius:20px;padding:28px;backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:20px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;animation:card-breathe 5s ease-in-out infinite}
+.card:hover{animation-play-state:paused}
+.card-mm2{animation-delay:0s}
+.card-adm{animation-delay:1.7s}
+.card-af{animation-delay:3.3s}
 .card::before{content:'';position:absolute;inset:0;border-radius:20px;opacity:0;transition:opacity .3s ease;pointer-events:none}
 .card:hover{transform:translateY(-10px)}
 .card-mm2{animation:glow-mm2 4s 1s ease-in-out infinite}
@@ -311,6 +318,9 @@ footer a:hover{color:rgba(232,232,240,.7)}
   <div id="orb2"></div>
   <div id="orb3"></div>
   <div id="cursor-glow"></div>
+  <div id="blob1" style="position:absolute;width:520px;height:520px;top:15%;left:10%;background:radial-gradient(circle,rgba(168,85,247,.09) 0%,rgba(124,58,237,.05) 50%,transparent 70%);animation:blob-morph 18s ease-in-out infinite;will-change:transform;pointer-events:none;filter:blur(2px)"></div>
+  <div id="blob2" style="position:absolute;width:400px;height:400px;bottom:20%;right:8%;background:radial-gradient(circle,rgba(0,212,255,.07) 0%,rgba(6,182,212,.04) 50%,transparent 70%);animation:blob-morph2 22s 4s ease-in-out infinite;will-change:transform;pointer-events:none;filter:blur(2px)"></div>
+  <div id="blob3" style="position:absolute;width:300px;height:300px;top:55%;left:45%;background:radial-gradient(circle,rgba(255,77,109,.05) 0%,rgba(244,63,94,.03) 50%,transparent 70%);animation:blob-morph 26s 9s ease-in-out infinite reverse;will-change:transform;pointer-events:none;filter:blur(3px)"></div>
   <div id="scanline"></div>
   <div class="comet"></div>
   <div class="comet2"></div>
